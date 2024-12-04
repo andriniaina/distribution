@@ -3,8 +3,8 @@
 do_clean() {
     test -n "${GETPERPID}" && kill -9 "${GETPERPID}"
     rm -f "/userdata/system/upgrade/upgrade_message.txt"
-    rm -f "/userdata/system/upgrade/boot.tar.xz"
-    rm -f "/userdata/system/upgrade/boot.tar.xz.md5"
+    rm -f "/userdata/system/upgrade/boot.tar.gz"
+    rm -f "/userdata/system/upgrade/boot.tar.gz.md5"
     if test $# -eq 1; then
         [ "$1" = "0" ] && echo "Finally syncing of disk ...>>>100"
         [ "$1" = "1" ] && echo "removed downloaded files, sync disk now"
@@ -34,7 +34,7 @@ do_badgeines() {
             COUNT=$((COUNT+5))
             sleep 0.1
         else
-            CURVAL=$(stat --printf="%s" "/userdata/system/upgrade/boot.tar.xz")
+            CURVAL=$(stat --printf="%s" "/userdata/system/upgrade/boot.tar.gz")
             CURVAL=$((CURVAL / 1024 / 1024))
             PER=$((CURVAL * 100 / TARVAL))
             echo "$CURVAL of $TARVAL MB downloaded ... >>> ${PER}%"
@@ -77,11 +77,11 @@ test $# -eq 1 && DWD_HTTP_DIR="$1"
 # Check if "manual" argument is provided
 if [ "$1" == "manual" ]; then
     # Check if the local file exists
-    if [ -f "/userdata/system/upgrade/boot.tar.xz" ]; then
-        size=$(du -m "/userdata/system/upgrade/boot.tar.xz" | awk '{print $1}')
-        echo "Using local file: /userdata/system/upgrade/boot.tar.xz (${size}MB)"
+    if [ -f "/userdata/system/upgrade/boot.tar.gz" ]; then
+        size=$(du -m "/userdata/system/upgrade/boot.tar.gz" | awk '{print $1}')
+        echo "Using local file: /userdata/system/upgrade/boot.tar.gz (${size}MB)"
     else
-        echo "Error: Local file /userdata/system/upgrade/boot.tar.xz not found."
+        echo "Error: Local file /userdata/system/upgrade/boot.tar.gz not found."
         exit 1
     fi
 else
@@ -89,7 +89,7 @@ else
     mkdir -p /userdata/system/upgrade || exit 1
 
     # get size to download
-    url="${DWD_HTTP_DIR}/boot.tar.xz"
+    url="${DWD_HTTP_DIR}/boot.tar.gz"
     echo "url: ${url}"
     headers=$(curl -A "batocera-upgrade.header" -sfIL "${url}")
     test $? -eq 0 || exit 1
@@ -123,26 +123,26 @@ done
 if [ "$1" != "manual" ]; then
     if [ $TERMINAL -eq 0 ]; then
         # download inside ES with badge
-        touch "/userdata/system/upgrade/boot.tar.xz"
+        touch "/userdata/system/upgrade/boot.tar.gz"
         do_badgeines "${size}" &
         GETPERPID=$!
-        curl -A "batocera-upgrade" -sfL "${url}" -o "/userdata/system/upgrade/boot.tar.xz" || exit 1
+        curl -A "batocera-upgrade" -sfL "${url}" -o "/userdata/system/upgrade/boot.tar.gz" || exit 1
         do_upgmsg "Calculating md5 checksum ..."
     else
         # download inside SSH or terminal
-        curl -A "batocera-upgrade" -fL "${url}" -o "/userdata/system/upgrade/boot.tar.xz" || exit 1
+        curl -A "batocera-upgrade" -fL "${url}" -o "/userdata/system/upgrade/boot.tar.gz" || exit 1
         echo "Check proper file download, checking md5sum - please wait"
     fi
 fi
 
 # try to download an md5 checksum
 if [ "$1" != "manual" ]; then
-    curl -A "batocera-upgrade.md5" -sfL "${url}.md5" -o "/userdata/system/upgrade/boot.tar.xz.md5"
+    curl -A "batocera-upgrade.md5" -sfL "${url}.md5" -o "/userdata/system/upgrade/boot.tar.gz.md5"
 fi
-if test -e "/userdata/system/upgrade/boot.tar.xz.md5"
+if test -e "/userdata/system/upgrade/boot.tar.gz.md5"
 then
-    DISTMD5=$(cat "/userdata/system/upgrade/boot.tar.xz.md5")
-    CURRMD5=$(md5sum "/userdata/system/upgrade/boot.tar.xz" | sed -e s+' .*$'++)
+    DISTMD5=$(cat "/userdata/system/upgrade/boot.tar.gz.md5")
+    CURRMD5=$(md5sum "/userdata/system/upgrade/boot.tar.gz" | sed -e s+' .*$'++)
     if test "${DISTMD5}" = "${CURRMD5}"
     then
         do_upgmsg "Checksum validated ..." 2
@@ -179,7 +179,7 @@ done
 
 # extract file on /boot
 do_upgmsg "Extracting files ..."
-if ! (cd /boot && xz -dc < "/userdata/system/upgrade/boot.tar.xz" | tar xvf - --no-same-owner)
+if ! (cd /boot && gzip -dc < "/userdata/system/upgrade/boot.tar.gz" | tar xvf - --no-same-owner)
 then
     exit 1
 fi
