@@ -1,26 +1,34 @@
 #!/bin/sh
 
+# only at start
+test "$1" != "start" && exit 0
+
+
+amixer -c 0 sset HpSpeaker on
+amixer -c 0 sset LINEOUT on
+# this volume slider is inverted in the audio drivers on trimui. Value goes from 0 to 7. 0 means no attenuation (volume max)
+amixer -c 0 sset Headphone 0
+
+
+## theoretically, this next part is not necessary anymore. Keeping this just in case of some edge cases for ALSA
+
 try_headphone_volume() {
     N=20
     while test "${N}" -gt 0
     do
         echo "retry applying audio (${N})" >&2
-	value=$(amixer sget "Headphone" | sed -n "s/  Mono: \([0-9]*\) .*/\1/p")
-	echo "Value: $value"
-	if [ "$value" -eq 4 ]
-	then
+        value=$(amixer -c 0 sget "Headphone" | sed -n "s/  Mono: \([0-9]*\) .*/\1/p")
+        echo "Value: $value"
+        if [ "$value" -eq 0 ]
+        then
             return 0
         fi
-	amixer set 'Headphone' 4
+        amixer -c 0 set 'Headphone' 0
         sleep 3
-	N=$((N-1))
+    	N=$((N-1))
     done
     return 1
 }
 
-if test "$1" = "start"
-then
-    sleep 5
-    try_headphone_volume
-fi
-
+sleep 5
+try_headphone_volume
