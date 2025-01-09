@@ -562,8 +562,8 @@ config BR2_TARGET_BATOCERA_IMAGES_DEFINITIONS
 													if BR2_PACKAGE_BATOCERA_TARGET_S905
 	default "rockchip/rk3399/orangepi-800 rockchip/rk3399/rg552 rockchip/rk3399/rockpro64 rockchip/rk3399/rock960 rockchip/rk3399/orangepi4-lts rockchip/rk3399/rock-pi-4 rockchip/rk3399/nanopi-m4v2 rockchip/rk3399/hugsun-x99" \
 													if BR2_PACKAGE_BATOCERA_TARGET_RK3399
-	#default "rockchip/rk3566/powkiddy-rgb30 rockchip/rk3566/rg-arc-s"	 			if BR2_PACKAGE_BATOCERA_TARGET_RK3568
-	default "rockchip/rk3566/powkiddy-x55"	 			if BR2_PACKAGE_BATOCERA_TARGET_RK3568
+	default "rockchip/rk3566/powkiddy-rgb30 rockchip/rk3566/rg-arc-s"	 			if BR2_PACKAGE_BATOCERA_TARGET_RK3568
+#	default "rockchip/rk3566/powkiddy-x55"	 			if BR2_PACKAGE_BATOCERA_TARGET_RK3568
 	default "rockchip/rk3588/orangepi-5-pro rockchip/rk3588/bananapi-m7 rockchip/rk3588/gameforce-ace rockchip/rk3588/rock-5c rockchip/rk3588/rock-5b rockchip/rk3588/rock-5a rockchip/rk3588/quartzpro64 rockchip/rk3588/orangepi-5 rockchip/rk3588/orangepi-5b rockchip/rk3588/orangepi-5-plus rockchip/rk3588/indiedroid-nova rockchip/rk3588/mekotronics-r58 rockchip/rk3588/khadas-edge-2 rockchip/rk3588/firefly-station-m3" \
 													if BR2_PACKAGE_BATOCERA_TARGET_RK3588
 #	default "rockchip/rk3568/anbernic-rgxx3 rockchip/rk3568/odroid-m1s rockchip/rk3568/odroid-m1 rockchip/rk3568/rock-3a rockchip/rk3568/rock-3c rockchip/rk3568/firefly-station-m2 rockchip/rk3568/firefly-station-p2" \
@@ -853,6 +853,7 @@ config BR2_PACKAGE_BATOCERA_SEGADC
 						   BR2_PACKAGE_BATOCERA_TARGET_BCM2711	|| \
 						   BR2_PACKAGE_BATOCERA_TARGET_BCM2712	|| \
 						   BR2_PACKAGE_BATOCERA_TARGET_RK3326	|| \
+						   BR2_PACKAGE_BATOCERA_TARGET_RK3568	|| \
 						   BR2_PACKAGE_BATOCERA_TARGET_A133	|| \
 						   BR2_PACKAGE_BATOCERA_TARGET_H700	|| \
 						   BR2_PACKAGE_BATOCERA_TARGET_H3	|| \
@@ -921,7 +922,8 @@ config BR2_PACKAGE_BATOCERA_ARCADE_SYSTEMS
 							   !BR2_PACKAGE_BATOCERA_TARGET_RK3128	&& \
 							   !BR2_PACKAGE_BATOCERA_TARGET_ATM7039 && \
 							   !BR2_PACKAGE_BATOCERA_TARGET_SUNXI_R16
-	select BR2_PACKAGE_LIBRETRO_SAME_CDI		if BR2_PACKAGE_BATOCERA_TARGET_X86_ANY
+	select BR2_PACKAGE_LIBRETRO_SAME_CDI		if BR2_PACKAGE_BATOCERA_TARGET_X86_ANY || \
+							   BR2_aarch64
 
 	# Standalone MAME
 #	select BR2_PACKAGE_MAME		if BR2_x86_64 || ((BR2_arm || BR2_aarch64 || BR2_RISCV_64) && BR2_PACKAGE_BATOCERA_WAYLAND)
