@@ -1,6 +1,8 @@
 #!/bin/bash
 
 do_overclock() {
+	echo -n $2 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+
     echo "$1" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
     echo "$1" > /sys/devices/system/cpu/cpu1/cpufreq/scaling_max_freq
     echo "$1" > /sys/devices/system/cpu/cpu2/cpufreq/scaling_max_freq
@@ -16,26 +18,29 @@ then
     # 408000 600000 816000 1008000 1200000 1416000 1608000 1800000 2000000 
 	    case "${OVALUE}" in
 		"extreme")
-		    do_overclock 2000000
+		    do_overclock 2000000 "interactive"
 		    ;;
 		"turbo")
-		    do_overclock 1800000
+		    do_overclock 1800000 "interactive"
 		    ;;
 		"high")
-		    do_overclock 1608000
+		    do_overclock 1608000 "interactive"
 		    ;;
 		"none")
-		    do_overclock 1416000
+		    do_overclock 1416000 "interactive"
 		    ;;
 		"low")
-		    do_overclock 816000
+		    do_overclock 816000 "interactive"
 		    ;;
 		"powersave")
-		    do_overclock 408000
+		    do_overclock 408000 "interactive"
 		    ;;
+		"ondemand")
+		    do_overclock 1608000 "ondemand"
+			;;
 		*)
 		    # default
-		    do_overclock 1416000
+		    do_overclock 1416000 "interactive"
 		    ;;
 	    esac
 fi
