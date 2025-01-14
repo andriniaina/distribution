@@ -107,6 +107,7 @@ doList() {
                 echo "none NONE (1200 MHz)"
                 echo "medium MEDIUM (1416 MHz)"
                 echo "high HIGH (1608 MHz)"
+                echo "ondemand ONDEMAND (1608 MHz)"
                 echo "turbo TURBO (1800 MHz)"
                 echo "extreme EXTREME (2000 MHz)"
           ;;
