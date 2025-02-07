@@ -31,18 +31,13 @@ shutdown_system() {
 echo "1" > "$POWER_BUTTON_STATE"
 
 # Wait for modification of flag file
-if inotifywait -qq -t "$LONG_PRESS_THRESHOLD" -e close_write "$POWER_BUTTON_STATE"; then
-    # Suspend if state changes before timeout
+inotifywait -qq -t "$LONG_PRESS_THRESHOLD" -e close_write "$POWER_BUTTON_STATE"
     if [ "$(cat "$POWER_BUTTON_STATE")" = "0" ]; then
         suspend_system
-    fi
-else
-    # Shutdown if timeout is reached
-    if [ "$(cat "$POWER_BUTTON_STATE")" = "1" ]; then
+    elif [ "$(cat "$POWER_BUTTON_STATE")" = "1" ]; then
         echo 1 > "$RUMBLE_FILE" && sleep 0.1 && echo 0 > "$RUMBLE_FILE"
         shutdown_system
     fi
-fi
 
 flock -u 200
 exit 0

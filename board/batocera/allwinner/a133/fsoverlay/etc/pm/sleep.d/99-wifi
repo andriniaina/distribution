@@ -1,0 +1,12 @@
+#!/bin/bash
+
+case "${1}" in
+   suspend)
+      ifconfig wlan0 down
+      ;;
+   resume)
+      ifconfig wlan0 up
+      ;;
+esac
+exit 0
+
